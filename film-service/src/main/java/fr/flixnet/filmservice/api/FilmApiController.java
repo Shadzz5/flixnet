@@ -1,14 +1,15 @@
 package fr.flixnet.filmservice.api;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.flixnet.filmservice.feignclient.DetailFeignClient;
 import fr.flixnet.filmservice.model.Film;
 import fr.flixnet.filmservice.repo.FilmRepository;
 import fr.flixnet.filmservice.request.CreateOrUpdateFilmRequest;
@@ -20,13 +21,15 @@ import lombok.RequiredArgsConstructor;
 public class FilmApiController {
     
     public final FilmRepository filmRepository;
+    @Autowired
+    private DetailFeignClient detailFeignClient;
 
     @PostMapping("/add")
-    public String addFilm(@RequestBody CreateOrUpdateFilmRequest request){
+    public String addFilm(@RequestBody CreateOrUpdateFilmRequest request) {
         Film film = new Film();
         BeanUtils.copyProperties(request, film);
-
-        this.filmRepository.save(film);
+        this.filmRepository.save(film);    
+        this.detailFeignClient.addDetailFilmWithIdFilm(film.getId());
         return film.getId();
     }
 
