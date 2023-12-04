@@ -1,0 +1,11 @@
+# Utilisez une image de base qui contient une JVM
+FROM openjdk:11-jre-slim
+
+# Copiez le fichier JAR de votre projet dans le conteneur
+COPY projet1/projet1.jar /app/projet1.jar
+
+# Définissez le répertoire de travail
+WORKDIR /app
+
+# Commande par défaut pour exécuter le projet
+CMD ["java", "-jar", "projet1.jar"]
